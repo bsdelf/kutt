@@ -63,12 +63,14 @@ router.post(
   asyncHandler(link.redirectProtected)
 );
 
+/*
 router.post(
   "/report",
   validators.reportLink,
   asyncHandler(helpers.verify),
   asyncHandler(link.report)
 );
+*/
 
 router.post(
   "/admin/ban/:id",

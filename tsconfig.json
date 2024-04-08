@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "sourceMap": true,
-    "outDir": "production-server",
+    "rootDir": "./server",
+    "outDir": "dist",
     "noUnusedLocals": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true,
     "noEmit": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strict": false
   },
+  "exclude": ["node_modules"],
   "include": ["global.d.ts", "server"]
 }

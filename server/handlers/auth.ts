@@ -2,14 +2,14 @@ import { differenceInMinutes, addMinutes, subMinutes } from "date-fns";
 import { Handler } from "express";
 import passport from "passport";
 import bcrypt from "bcryptjs";
-import nanoid from "nanoid";
+// import nanoid from "nanoid";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
 
 import { CustomError } from "../utils";
 import * as utils from "../utils";
 import * as redis from "../redis";
-import * as mail from "../mail";
+// import * as mail from "../mail";
 import query from "../queries";
 import env from "../env";
 
@@ -120,9 +120,13 @@ export const signup: Handler = async (req, res) => {
     req.user
   );
 
-  await mail.verification(user);
+  if (user) {
+    // await mail.verification(user);
+  }
 
-  return res.status(201).send({ message: "Verification email has been sent." });
+  return res
+    .status(201)
+    .send({ message: `Verification token: ${user.verification_token}` });
 };
 
 export const token: Handler = async (req, res) => {
@@ -148,9 +152,10 @@ export const verify: Handler = async (req, res, next) => {
   if (user) {
     const token = utils.signToken(user);
     req.token = token;
+    return res.status(200).send({ message: "Verfication success." });
   }
 
-  return next();
+  return res.status(401).send({ message: "Verfication failed." });
 };
 
 export const changePassword: Handler = async (req, res) => {
@@ -169,6 +174,7 @@ export const changePassword: Handler = async (req, res) => {
 };
 
 export const generateApiKey: Handler = async (req, res) => {
+  const { nanoid } = await import("nanoid");
   const apikey = nanoid(40);
 
   redis.remove.user(req.user);
@@ -192,7 +198,7 @@ export const resetPasswordRequest: Handler = async (req, res) => {
   );
 
   if (user) {
-    await mail.resetPasswordToken(user);
+    // await mail.resetPasswordToken(user);
   }
 
   return res.status(200).send({
@@ -252,7 +258,7 @@ export const changeEmailRequest: Handler = async (req, res) => {
   redis.remove.user(updatedUser);
 
   if (updatedUser) {
-    await mail.changeEmail({ ...updatedUser, email });
+    // await mail.changeEmail({ ...updatedUser, email });
   }
 
   return res.status(200).send({

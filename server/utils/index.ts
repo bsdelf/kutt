@@ -1,5 +1,5 @@
 import ms from "ms";
-import nanoid from "nanoid/generate";
+// import nanoid from "nanoid/generate";
 import JWT from "jsonwebtoken";
 import {
   differenceInDays,
@@ -40,11 +40,24 @@ export const signToken = (user: UserJoined) =>
     env.JWT_SECRET
   );
 
+let generateAddressImpl: undefined | (() => string) = undefined;
+const generateAddress = async () => {
+  if (!generateAddressImpl) {
+    const { customAlphabet } = await import("nanoid");
+    generateAddressImpl = customAlphabet(
+      "abcdefghkmnpqrstuvwxyzABCDEFGHKLMNPQRSTUVWXYZ23456789",
+      env.LINK_LENGTH
+    );
+  }
+  return generateAddressImpl();
+};
+
 export const generateId = async (domain_id: number = null) => {
-  const address = nanoid(
-    "abcdefghkmnpqrstuvwxyzABCDEFGHKLMNPQRSTUVWXYZ23456789",
-    env.LINK_LENGTH
-  );
+  // const address = nanoid(
+  //   "abcdefghkmnpqrstuvwxyzABCDEFGHKLMNPQRSTUVWXYZ23456789",
+  //   env.LINK_LENGTH
+  // );
+  const address = await generateAddress();
   const link = await query.link.find({ address, domain_id });
   if (!link) return address;
   return generateId(domain_id);
